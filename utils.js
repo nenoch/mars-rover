@@ -4,13 +4,13 @@ const applyMove = (move, currentPosition) => ({
             return { x: currentPosition.x, y: ++currentPosition.y, d: currentPosition.d }
         },
         B: (currentPosition) => {
-            return { x: currentPosition.x, y: --currentPosition.y, d: 'S' }
+            return { x: currentPosition.x, y: --currentPosition.y, d: currentPosition.d = 'S' }
         },
         R: (currentPosition) => {
-            return { x: ++currentPosition.x, y: currentPosition.y, d: 'E' }
+            return { x: ++currentPosition.x, y: currentPosition.y, d: currentPosition.d = 'E' }
         },
         L: (currentPosition) => {
-            return { x: --currentPosition.x, y: currentPosition.y, d: 'W' }
+            return { x: --currentPosition.x, y: currentPosition.y, d: currentPosition.d = 'W' }
         },
     })[move](currentPosition),
     S: (move) => ({
@@ -18,13 +18,13 @@ const applyMove = (move, currentPosition) => ({
             return { x: currentPosition.x, y: --currentPosition.y, d: currentPosition.d }
         },
         B: (currentPosition) => {
-            return { x: currentPosition.x, y: ++currentPosition.y, d: 'N' }
+            return { x: currentPosition.x, y: ++currentPosition.y, d: currentPosition.d = 'N' }
         },
         R: (currentPosition) => {
-            return { x: --currentPosition.x, y: currentPosition.y, d: 'W' }
+            return { x: --currentPosition.x, y: currentPosition.y, d: currentPosition.d = 'W' }
         },
         L: (currentPosition) => {
-            return { x: ++currentPosition.x, y: currentPosition.y, d: 'E' }
+            return { x: ++currentPosition.x, y: currentPosition.y, d: currentPosition.d = 'E' }
         },
     })[move](currentPosition),
     E: (move) => ({
@@ -32,13 +32,13 @@ const applyMove = (move, currentPosition) => ({
             return { x: ++currentPosition.x, y: currentPosition.y, d: currentPosition.d }
         },
         B: (currentPosition) => {
-            return { x: --currentPosition.x, y: currentPosition.y++, d: 'W' }
+            return { x: --currentPosition.x, y: currentPosition.y++, d: currentPosition.d = 'W' }
         },
         R: (currentPosition) => {
-            return { x: currentPosition.x, y: --currentPosition.y, d: 'S' }
+            return { x: currentPosition.x, y: --currentPosition.y, d: currentPosition.d = 'S' }
         },
         L: (currentPosition) => {
-            return { x: currentPosition.x, y: ++currentPosition.y, d: 'N' }
+            return { x: currentPosition.x, y: ++currentPosition.y, d: currentPosition.d = 'N' }
         },
     })[move](currentPosition),
     W: (move) => ({
@@ -46,13 +46,13 @@ const applyMove = (move, currentPosition) => ({
             return { x: --currentPosition.x, y: currentPosition.y, d: currentPosition.d }
         },
         B: (currentPosition) => {
-            return { x: ++currentPosition.x, y: currentPosition.y, d: 'E' }
+            return { x: ++currentPosition.x, y: currentPosition.y, d: currentPosition.d = 'E' }
         },
         R: (currentPosition) => {
-            return { x: currentPosition.x, y: ++currentPosition.y, d: 'N' }
+            return { x: currentPosition.x, y: ++currentPosition.y, d: currentPosition.d = 'N' }
         },
         L: (currentPosition) => {
-            return { x: currentPosition.x, y: --currentPosition.y, d: 'S' }
+            return { x: currentPosition.x, y: --currentPosition.y, d: currentPosition.d = 'S' }
         },
     })[move](currentPosition)
 })[currentPosition.d](move);

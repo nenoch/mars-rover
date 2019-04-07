@@ -6,10 +6,7 @@ class Planet {
         this.maxX = maxX;
         this.maxY = maxY;
         this.maxObs = maxObs;
-        this.obstacles = [
-            { x: 2, y: 2 }
-        ]
-        // this.obstacles = this.setObstacles([]);
+        this.obstacles = this.setObstacles([]);
     }
 
     // private
@@ -26,6 +23,10 @@ class Planet {
     getObstacles() {
         return this.obstacles;
     }
+
+    getGrid() {
+        return { maxX: this.maxX, maxY: this.maxY };
+    }
 }
 
 class Rover {
@@ -39,25 +40,18 @@ class Rover {
     }
 
     setPosition(instructions) {
-        [...instructions].forEach(m => {
-            const newPosition = applyMove(m, mission.rover.position);
-            if (this.isObstacle(this.planet.getObstacles(), newPosition)) {
-                throw 'bye';
-            }
-
-            // for (let obs of this.planet.obstacles) {
-            //     return (obs.x == newPosition.x && obs.y == newPosition.y);
-            //     // {
-            //         // return true;
-            //         // throw `Obstacle detected at ${JSON.stringify(newPosition)}`;
-            //     // }
-            //     // return false;
-            // }
-            console.log('I got here', this.position);
-            this.position = this.accountForSphere(newPosition, this.planet.maxX, this.planet.maxY);
+        let response = this.position;
+        [...instructions].some(m => {
+            applyMove(m, mission.rover.position);
+            if (this.isObstacle(this.planet.getObstacles(), this.position)) {
+                response = {
+                    errorMsg: `Obstacle detected at ${JSON.stringify(this.position)}. Abort sequence.`
+                }
+                return true
+            };
+            this.position = this.accountForSphere(this.position, this.planet.getGrid());
         })
-        console.log('and here', this.position);
-        return this.position;
+        return response;
     }
 
     // private
@@ -68,11 +62,11 @@ class Rover {
     }
 
     // private
-    accountForSphere(position, maxX, maxY) {
-        if (position.x < 0) { position.x = maxX + position.x }
-        if (position.y < 0) { position.y = maxY + position.y }
-        if (position.x > maxX) { position.x = position.x - maxX }
-        if (position.y > maxY) { position.y = position.y - maxY }
+    accountForSphere(position, grid) {
+        if (position.x < 0) { position.x = grid.maxX + position.x }
+        if (position.y < 0) { position.y = grid.maxY + position.y }
+        if (position.x > grid.maxX) { position.x = position.x - grid.maxX }
+        if (position.y > grid.maxY) { position.y = position.y - grid.maxY }
         return position;
     }
 }
@@ -91,6 +85,6 @@ function startMission() {
 }
 
 startMission()
-console.log('mission.rover.setPosition >>', mission.rover.setPosition('FFRF'));
+console.log('mission.rover.setPosition >>', mission.rover.setPosition('FFRFFFF'));
 console.log('planet obs >>', mission.planet.obstacles);
 console.log('getPosition >>', mission.rover.getPosition());
