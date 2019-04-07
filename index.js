@@ -1,11 +1,10 @@
-const applyMove = require('./utils').applyMove;
-const getRandomInt = require('./utils').getRandomInt;
+import { applyMove, getRandomInt } from './utils'
 
-class Planet {
-    constructor(maxX = 100, maxY = 100, maxObs = 4) {
-        this.maxX = maxX;
-        this.maxY = maxY;
-        this.maxObs = maxObs;
+export class Planet {
+    constructor() {
+        this.maxX = 100;
+        this.maxY = 100;
+        this.maxObs = 4;
         this.obstacles = this.setObstacles([]);
     }
 
@@ -29,7 +28,7 @@ class Planet {
     }
 }
 
-class Rover {
+export class Rover {
     constructor(planet) {
         this.position = { x: 0, y: 0, d: 'N' };
         this.planet = planet;
@@ -42,8 +41,8 @@ class Rover {
     setPosition(instructions) {
         let response = this.position;
         [...instructions].some(m => {
-            applyMove(m, mission.rover.position);
-            if (this.isObstacle(this.planet.getObstacles(), this.position)) {
+            this.applyMove(m, this.position);
+            if (this.reachObstacle(this.planet.getObstacles(), this.position)) {
                 response = {
                     errorMsg: `Obstacle detected at ${JSON.stringify(this.position)}. Abort sequence.`
                 }
@@ -55,7 +54,7 @@ class Rover {
     }
 
     // private
-    isObstacle(obstacles, position) {
+    reachObstacle(obstacles, position) {
         for (let obs of obstacles) {
             return (obs.x === position.x && obs.y === position.y);
         }
@@ -69,22 +68,84 @@ class Rover {
         if (position.y > grid.maxY) { position.y = position.y - grid.maxY }
         return position;
     }
+
+    // private
+    applyMove(move, currentPosition) {
+        return ({
+            N: (move) => ({
+                F: (currentPosition) => {
+                    return { x: currentPosition.x, y: ++currentPosition.y, d: currentPosition.d }
+                },
+                B: (currentPosition) => {
+                    return { x: currentPosition.x, y: --currentPosition.y, d: currentPosition.d = 'S' }
+                },
+                R: (currentPosition) => {
+                    return { x: ++currentPosition.x, y: currentPosition.y, d: currentPosition.d = 'E' }
+                },
+                L: (currentPosition) => {
+                    return { x: --currentPosition.x, y: currentPosition.y, d: currentPosition.d = 'W' }
+                },
+            })[move](currentPosition),
+            S: (move) => ({
+                F: (currentPosition) => {
+                    return { x: currentPosition.x, y: --currentPosition.y, d: currentPosition.d }
+                },
+                B: (currentPosition) => {
+                    return { x: currentPosition.x, y: ++currentPosition.y, d: currentPosition.d = 'N' }
+                },
+                R: (currentPosition) => {
+                    return { x: --currentPosition.x, y: currentPosition.y, d: currentPosition.d = 'W' }
+                },
+                L: (currentPosition) => {
+                    return { x: ++currentPosition.x, y: currentPosition.y, d: currentPosition.d = 'E' }
+                },
+            })[move](currentPosition),
+            E: (move) => ({
+                F: (currentPosition) => {
+                    return { x: ++currentPosition.x, y: currentPosition.y, d: currentPosition.d }
+                },
+                B: (currentPosition) => {
+                    return { x: --currentPosition.x, y: currentPosition.y++, d: currentPosition.d = 'W' }
+                },
+                R: (currentPosition) => {
+                    return { x: currentPosition.x, y: --currentPosition.y, d: currentPosition.d = 'S' }
+                },
+                L: (currentPosition) => {
+                    return { x: currentPosition.x, y: ++currentPosition.y, d: currentPosition.d = 'N' }
+                },
+            })[move](currentPosition),
+            W: (move) => ({
+                F: (currentPosition) => {
+                    return { x: --currentPosition.x, y: currentPosition.y, d: currentPosition.d }
+                },
+                B: (currentPosition) => {
+                    return { x: ++currentPosition.x, y: currentPosition.y, d: currentPosition.d = 'E' }
+                },
+                R: (currentPosition) => {
+                    return { x: currentPosition.x, y: ++currentPosition.y, d: currentPosition.d = 'N' }
+                },
+                L: (currentPosition) => {
+                    return { x: currentPosition.x, y: --currentPosition.y, d: currentPosition.d = 'S' }
+                },
+            })[move](currentPosition)
+        })[currentPosition.d](move);
+    }
 }
 
-class Mission {
+export class Mission {
     constructor() {
         this.planet = new Planet();
         this.rover = new Rover(this.planet);
     }
 }
 
-let mission;
+// let mission;
 
-function startMission() {
-    mission = new Mission()
-}
+// function startMission() {
+//     mission = new Mission()
+// }
 
-startMission()
-console.log('mission.rover.setPosition >>', mission.rover.setPosition('FFRFFFF'));
-console.log('planet obs >>', mission.planet.obstacles);
-console.log('getPosition >>', mission.rover.getPosition());
+// startMission()
+// console.log('mission.rover.setPosition >>', mission.rover.setPosition('FFRFFFF'));
+// console.log('planet obs >>', mission.planet.obstacles);
+// console.log('getPosition >>', mission.rover.getPosition());
