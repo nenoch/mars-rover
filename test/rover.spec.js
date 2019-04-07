@@ -1,24 +1,15 @@
 import { expect } from 'chai'
-import { Planet, Rover } from '../index'
-
-describe('[Planet/tests]', () => {
-    const planet = new Planet()
-    it('generateObstacle should generate coordinates for an obstacle', () => {
-        const obstacle = planet.generateObstacle()
-        expect(obstacle).to.have.property('x')
-        expect(obstacle).to.have.property('y')
-        expect(obstacle.x).to.be.within(0, 100)
-        expect(obstacle.y).to.be.within(0, 100)
-    })
-    it('setObstacles should generate obstacles on the planet', () => {
-        const obstacles = planet.setObstacles([])
-        expect(obstacles.length).to.be.within(0, 4)
-    })
-
-})
+import { Rover } from '../lib/rover'
 
 describe('[Rover/tests]', () => {
     const rover = new Rover()
+    it('returnErrorMsg should return error message with rover\'s position', () => {
+        const mockPos = { x: 34, y: 67, d: 'W' }
+        expect(rover.returnErrorMsg(mockPos)).to.deep.equal({
+            errorMsg: 'Obstacle detected at {\"x\":34,\"y\":67,\"d\":\"W\"}. Abort sequence.'
+        })
+
+    })
     describe('reachObstacles', () => {
         const mockObs = [
             { x: 2, y: 2 },
@@ -73,6 +64,7 @@ describe('[Rover/tests]', () => {
     describe('setPosition', () => {
         it('should return the new position given a set of instructions', () => {
             expect(rover.setPosition('FFLR')).to.deep.equal({ x: 99, y: 3, d: 'N' })
+            expect(rover.setPosition('BFFR')).to.deep.equal({ x: 98, y: 0, d: 'W' })
         })
     })
 })
