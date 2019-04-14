@@ -2,19 +2,42 @@ import { expect } from 'chai'
 import { Rover } from '../lib/rover'
 
 describe('[Rover/tests]', () => {
-    const rover = new Rover()
-    it('returnErrorMsg should return error message with rover\'s position', () => {
-        const mockPos = { x: 34, y: 67, d: 'W' }
-        expect(rover.returnErrorMsg(mockPos)).to.deep.equal({
-            errorMsg: 'Obstacle detected at {\"x\":34,\"y\":67,\"d\":\"W\"}. Abort sequence.'
+    const mockObs = [
+        { x: 2, y: 2 },
+        { x: 4, y: 4 }
+    ]
+    const mockPlanet = {
+        getObstacles: () => mockObs,
+        getGrid: () => ({ maxX: 100, maxY: 100 })
+    }
+    const rover = new Rover(mockPlanet)
+    describe('getPosition', () => {
+        it('should return the rover\'s position', () => {
+            expect(rover.getPosition()).to.deep.equal({ x: 0, y: 0, d: 'N' })
         })
+    })
+    describe('setPosition', () => {
+        it('should return the new position given a set of instructions', () => {
+            expect(rover.setPosition('FFLR')).to.deep.equal({ x: 99, y: 3, d: 'N' })
+            expect(rover.setPosition('BFFR')).to.deep.equal({ x: 98, y: 0, d: 'W' })
+        })
+        it('when reaching an obstacle, should return last possible position, aborts the sequence and reports the obstacle', () => {
+            const rover2 = new Rover(mockPlanet)
+            expect(rover2.setPosition('FFRFF')).to.deep.equal({
+                errorMsg: 'Obstacle detected at {\"x\":2,\"y\":2,\"d\":\"E\"}. Abort sequence.'
+            })
+        })
+    })
+    describe('returnErrorMsg', () => {
+        it('should return error message with rover\'s position', () => {
+            const mockPos = { x: 34, y: 67, d: 'W' }
+            expect(rover.returnErrorMsg(mockPos)).to.deep.equal({
+                errorMsg: 'Obstacle detected at {\"x\":34,\"y\":67,\"d\":\"W\"}. Abort sequence.'
+            })
 
+        })
     })
     describe('reachObstacles', () => {
-        const mockObs = [
-            { x: 2, y: 2 },
-            { x: 4, y: 4 }
-        ]
         it('should return true if rover reaches an obstacle', () => {
             const mockPos = { x: 2, y: 2, d: 'N' }
             expect(rover.reachObstacle(mockObs, mockPos)).to.equal(true)
@@ -59,12 +82,6 @@ describe('[Rover/tests]', () => {
         it('command R should move the rover right by 1 step', () => {
             const defPosition = { x: 0, y: 0, d: 'N' }
             expect(rover.applyMove('R', defPosition)).to.deep.equal({ x: 1, y: 0, d: 'E' })
-        })
-    })
-    describe('setPosition', () => {
-        it('should return the new position given a set of instructions', () => {
-            expect(rover.setPosition('FFLR')).to.deep.equal({ x: 99, y: 3, d: 'N' })
-            expect(rover.setPosition('BFFR')).to.deep.equal({ x: 98, y: 0, d: 'W' })
         })
     })
 })
