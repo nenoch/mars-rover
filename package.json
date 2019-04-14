@@ -4,15 +4,15 @@
   "description": "A joyful NASA rover exploring a planet (which in this case happens to be Mars)",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --exec babel-node index.js",
-    "test": "mocha --require @babel/register"
+    "start": "babel-node index.js",
+    "test": "mocha src/test --require @babel/register"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/nenoch/mars-rover.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Irene Canuti",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/nenoch/mars-rover/issues"
@@ -25,7 +25,6 @@
     "@babel/preset-env": "^7.4.3",
     "@babel/register": "^7.4.0",
     "chai": "^4.2.0",
-    "mocha": "^6.0.2",
-    "nodemon": "^1.18.10"
+    "mocha": "^6.0.2"
   }
 }
